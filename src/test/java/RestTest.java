@@ -1,16 +1,30 @@
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import pojos.CreateUserResponse;
+import pojos.UserPojo;
+import pojos.UserPojoFull;
+import pojos.UserRequest;
+import utils.RestWrapper;
+import utils.userGenerator;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-import pojos.*;
-
 
 public class RestTest {
+
+    static RestWrapper api;
+
+    @BeforeAll
+    public static void prepareClient() {
+        api = RestWrapper.loginAs("eve.holt@reqres.in", "cityslicka");
+    }
+
 
     @Test
     void getUsers() {
@@ -103,18 +117,52 @@ public class RestTest {
 
     @Test
     void getUsers6() {
-        List<UserPojoFull> users = given()
+        assertThat(api.userServices.getListUsers()).extracting(UserPojoFull::getEmail).contains("charles.morris@reqres.in");
+        assertThat(api.userServices.getListUsers()).extracting(UserPojoFull::getFirstName).contains("Charles");
+    }
+
+
+    @Test
+    void CreateUserRq() {
+        UserRequest rq =
+                UserRequest.builder()
+                        .name("New One" + LocalDateTime.now().toString())
+                        .job("QA" + LocalDateTime.now().toString())
+                        .build();
+
+
+        CreateUserResponse rs = given()
                 .baseUri("https://reqres.in/api")
                 .basePath("/users")
                 .contentType(ContentType.JSON)
                 .log().all()
-                .when().get()
-                .then().statusCode(200)
+                .body(rq)
+                .when().post()
+                .then().statusCode(201)
                 .log().all()
-                .extract().jsonPath().getList("data", UserPojoFull.class);
+                .extract().as(CreateUserResponse.class);
 
-        assertThat(users).extracting(UserPojoFull::getEmail).contains("charles.morris@reqres.in");
-        assertThat(users).extracting(UserPojoFull::getFirstName).contains("Charles");
+        assertThat(rs)
+                .isNotNull()
+                .extracting(CreateUserResponse::getName).isEqualTo(rq.getName());
+        assertThat(rs)
+                .isNotNull()
+                .extracting(CreateUserResponse::getJob).isEqualTo(rq.getJob());
+
+    }
+
+    @Test
+    void CreateUserRq1() {
+        UserRequest rq = userGenerator.getSimpleUser();
+        CreateUserResponse rs = api.userServices.createUser(rq);
+
+        assertThat(rs)
+                .isNotNull()
+                .extracting(CreateUserResponse::getName).isEqualTo(rq.getName());
+        assertThat(rs)
+                .isNotNull()
+                .extracting(CreateUserResponse::getJob).isEqualTo(rq.getJob());
+
     }
 
 
