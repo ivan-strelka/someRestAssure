@@ -181,6 +181,19 @@ public class RestTest {
         json.put("status", "12");
         ((ObjectNode) json.get("tags").get(0)).put("from", ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
 
+        CreateUserResponse as = given()
+                .baseUri("https://reqres.in/api")
+                .basePath("/users")
+                .contentType(ContentType.JSON)
+                .log().all()
+                .body(json)
+                .when().post()
+                .then().statusCode(201)
+                .log().all()
+                .extract().as(CreateUserResponse.class);
+
+        System.out.println(as.toString());
+        System.out.println(json.asText());
 
     }
 
