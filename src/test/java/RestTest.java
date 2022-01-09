@@ -1,3 +1,5 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -8,7 +10,11 @@ import pojos.UserRequest;
 import utils.RestWrapper;
 import utils.userGenerator;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -162,6 +168,32 @@ public class RestTest {
         assertThat(rs)
                 .isNotNull()
                 .extracting(CreateUserResponse::getJob).isEqualTo(rq.getJob());
+
+    }
+
+    @Test
+    void jsonPodamEx() throws IOException {
+        ObjectNode json = new ObjectMapper().readValue(new File("src/test/java/podamEx/ex.json"),
+                ObjectNode.class);
+        ((ObjectNode) json.get("tags").get(0)).put("id", 12);
+        ((ObjectNode) json.get("category")).put("id", 99);
+        ((ObjectNode) json.get("category")).put("name", "NAME_TEST");
+        json.put("status", "12");
+        ((ObjectNode) json.get("tags").get(0)).put("from", ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
+
+
+    }
+
+    @Test
+    public void jsonPodamEx2() throws IOException {
+        ObjectNode json = new ObjectMapper().readValue(new File("src/test/java/ex.json"),
+                ObjectNode.class);
+        ((ObjectNode) json.get("tags").get(0)).put("id", 12);
+        ((ObjectNode) json.get("category")).put("id", 99);
+        ((ObjectNode) json.get("category")).put("name", "NAME_TEST");
+        json.put("status", "12");
+        ((ObjectNode) json.get("tags").get(0)).put("from", ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
+
 
     }
 
