@@ -172,8 +172,8 @@ public class RestTest {
     }
 
     @Test
-    void jsonPodamEx() throws IOException {
-        ObjectNode json = new ObjectMapper().readValue(new File("src/test/java/podamEx/ex.json"),
+    void jsonObjectNodeEx() throws IOException {
+        ObjectNode json = new ObjectMapper().readValue(new File("src/test/java/ex/ex.json"),
                 ObjectNode.class);
         ((ObjectNode) json.get("tags").get(0)).put("id", 12);
         ((ObjectNode) json.get("category")).put("id", 99);
@@ -183,19 +183,5 @@ public class RestTest {
 
 
     }
-
-    @Test
-    public void jsonPodamEx2() throws IOException {
-        ObjectNode json = new ObjectMapper().readValue(new File("src/test/java/ex.json"),
-                ObjectNode.class);
-        ((ObjectNode) json.get("tags").get(0)).put("id", 12);
-        ((ObjectNode) json.get("category")).put("id", 99);
-        ((ObjectNode) json.get("category")).put("name", "NAME_TEST");
-        json.put("status", "12");
-        ((ObjectNode) json.get("tags").get(0)).put("from", ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
-
-
-    }
-
 
 }
