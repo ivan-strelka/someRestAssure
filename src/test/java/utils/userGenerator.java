@@ -1,6 +1,8 @@
 package utils;
 
 import pojos.UserRequest;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -20,5 +22,11 @@ public class userGenerator {
                 .name("New One " + ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))
                 .job("QA " + ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))
                 .build();
+    }
+
+
+    public static UserRequest getSimpleUser3() {
+        PodamFactory factory = new PodamFactoryImpl();
+        return factory.manufacturePojo(UserRequest.class);
     }
 }
