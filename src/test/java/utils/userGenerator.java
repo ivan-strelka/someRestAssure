@@ -24,7 +24,6 @@ public class userGenerator {
                 .build();
     }
 
-
     public static UserRequest getSimpleUser3() {
         PodamFactory factory = new PodamFactoryImpl();
         return factory.manufacturePojo(UserRequest.class);
