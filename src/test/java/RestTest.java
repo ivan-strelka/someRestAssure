@@ -3,10 +3,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import podamEx.Category;
+import podamEx.Response;
 import pojos.CreateUserResponse;
 import pojos.UserPojo;
 import pojos.UserPojoFull;
 import pojos.UserRequest;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 import utils.RestWrapper;
 import utils.userGenerator;
 
@@ -197,4 +201,23 @@ public class RestTest {
 
     }
 
+    @Test
+    void podamEx() {
+        PodamFactory podamFactory = new PodamFactoryImpl();
+        Response response = podamFactory.manufacturePojo(Response.class);
+        Category category = podamFactory.manufacturePojo(Category.class);
+
+        System.out.println("RES ------>>>>>>  " + response.toString());
+        System.out.println("CAT  ------>>>>   " + category.toString());
+
+
+        given()
+                .baseUri("https://reqres.in/api")
+                .basePath("/users")
+                .contentType(ContentType.JSON)
+                .log().all()
+                .body(response)
+                .when().post()
+                .then().statusCode(201);
+    }
 }
